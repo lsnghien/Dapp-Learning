@@ -149,6 +149,74 @@ console.log(`Contract deployed at address: ${deployReceipt.contractAddress}`);
 ```
 
 ### 10. Tải contract instance từ blockchain thông qua địa chỉ hợp đồng (contract address)
+Ở phần trước chúng ta đã xây dựng một contract instance và triển khai giao dịch (deploy transaction) bằng cách gửi hợp đồng đến blockchain và bạn có thể vận hành giao dịch ngay sau đó. Bên cạnh đó bạn cũng có thể tải một phiên bản contract instance có sẵn trên chuỗi khối và vận hành nó mà không cần thông qua quy trình deploy.
+```js
+let incrementer = new web3.eth.Contract(abi, deployReceipt.contractAddress);
+```
+
+### 11. Sử dụng chức năng `view` của contract
+Bất kể contract instance được tạo ra bởi quy trình deploying hay loading thì bạn vẫn có thể tương tác với hợp đồng vì một phiên bản của nó đã có mặt trên blockchain.
+Có hai loại chức năng của contract: `view` và không `view`. Với chức năng `view` bạn chỉ có thể đọc mà không thể thay đổi trạng thái của blockchain, trong khi các chức năng không có `view`sẽ tạo dữ liệu khối tương ứng trên  blockchain.
+Ví dụ, sau khi gọi hàm `getNumber`, bạn sẽ nhận được một giá trị số công khai, hoạt động này sẽ không tính bất kì đơn vị Gas nào.
+```js
+let number = await incrementer.methods.getNumber().call();
+```
+
+### 12. Xây dựng một giao dịch
+Để gửi một giao dịch (transaction) đến blockchain thì bạn cần xây dựng giao dịch (build the transaction). Điều này có nghĩa là bạn cần phải chỉ định các tham số (parameters) của giao dịch.
+```js
+let incrementTx = incrementer.methods.increment(_value);
+
+// Ký bằng private key (PK)
+let incrementTransaction = await web3.eth.accounts.signTransaction(
+  {
+    to: createReceipt.contractAddress,
+    data: incrementTx.encodeABI(),
+    gas: 8000000,
+  },
+  account_from.privateKey
+);
+```
+
+### 13. Gửi giao dịch và lấy biên nhận/ biên lai (receipt)
+Bạn có thể sử dụng hàm  `sendSignedTransaction` để gửi giao dịch trên đến blockchain và nhận một biên lai để kiểm tra kết quả.
+```js
+const incrementReceipt = await web3.eth.sendSignedTransaction(
+  incrementTransaction.rawTransaction
+);
+```
+
+### 14. Nghe sự kiện increment (Event increment)
+Khi gọi các giao diện của contract, ngoài kế quả do giao diện trả về, chỉ có duy nhất một cách để có thể nhận thông tin về các chi tiết xử lý đó là thông qua `event`.
+Trong các giao diện, bạn có thể truy xuất thông tin nội bộ tương ứng bằng cách kích hoạt một `event`, sau đó cap lấy event. Envent này được tạo nên bởi các block ngoại (external block).
+
+```js
+const web3Socket = new Web3(
+new Web3.providers.WebsocketProvider(
+    'wss://goerli.infura.io/ws/v3/' + process.env.INFURA_ID
+));
+incrementer = new web3Socket.eth.Contract(abi, createReceipt.contractAddress);
+
+```
+| Goerli không hỗ trợ http protocol để nghe event, khuyến khích sử dụn websocket. Thông tin chi tiết vui lòng truy cập [blog](https://medium.com/blockcentric/listening-for-smart-contract-events-on-public-blockchains-fdb5a8ac8b9a)
+
+#### Để nghe sự kiện increment chỉ 1 một lần 
+```js
+incrementer.once('Increment', (error, event) => {
+    console.log('I am a onetime event listener, I am going to die now');
+});
+```
+
+#### Để nghe sự kiện increment liên tục 
+```js
+incrementer.events.Increment(() => {
+    console.log("I am a longlive event listener, I get a event now");
+});
+```
+
+# Tài liệu tham khảo
+- Code part: https://docs.moonbeam.network/getting-started/local-node/deploy-contract/
+- web3socket of Goerli: https://medium.com/blockcentric/listening-for-smart-contract-events-on-public-blockchains-fdb5a8ac8b9a 
 
 
 
