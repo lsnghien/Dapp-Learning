@@ -198,16 +198,16 @@ new Web3.providers.WebsocketProvider(
 incrementer = new web3Socket.eth.Contract(abi, createReceipt.contractAddress);
 
 ```
-| Goerli không hỗ trợ http protocol để nghe event, khuyến khích sử dụn websocket. Thông tin chi tiết vui lòng truy cập [blog](https://medium.com/blockcentric/listening-for-smart-contract-events-on-public-blockchains-fdb5a8ac8b9a)
+| Goerli không hỗ trợ http protocol để nghe event, khuyến khích sử dụn websocket. Thông tin chi tiết vui lòng truy cập [blog](https://medium.com/blockcentric/listening-for-smart-contract-events-on-public-blockchains-fdb5a8ac8b9a). 
 
-#### Để nghe sự kiện increment chỉ 1 một lần 
+#### Nghe sự kiện increment chỉ 1 một lần 
 ```js
 incrementer.once('Increment', (error, event) => {
     console.log('I am a onetime event listener, I am going to die now');
 });
 ```
 
-#### Để nghe sự kiện increment liên tục 
+#### Nghe sự kiện increment liên tục 
 ```js
 incrementer.events.Increment(() => {
     console.log("I am a longlive event listener, I get a event now");
