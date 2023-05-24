@@ -21,10 +21,10 @@ Demo code dưới đây cung cấp cho Dev góc nhìn khái quát về cách kí
     ```  
   4. Khởi động `index.js` file: `node index.js`
  
- # Trình phiên dịch Source Code
+ # Hiểu về thư viện (source code)
  ## `compile.js`
  Bạn không thể sử dụng trực tiếp file `.sol` do đó cần đưa nó về hệ nhị phân
- ### Load tệp smart contract `Incrementer.sol` thành biến `source`.
+ ### Load tệp smart contract `Incrementer.sol` vào biến `source`.
  
  ```js
 // Load contract
