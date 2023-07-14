@@ -49,6 +49,7 @@ Bài viết này khái quát cho Dev về cách tương tác cũng như tìm hi�
  const source = fs.readFileSync("Incrementer.sol", "utf8");
  ```
 2. Biên dịch mã nguồn tệp smart contract
+```
 // Ngôn ngữ biên dịch solidity
 const input = {
     language: 'Solidity',
@@ -71,13 +72,14 @@ const tempFile = JSON.parse(solc.compile(JSON.stringify(input)));
 | Lưu ý: Phiên bản solidity sử dụng trong tác vụ này là version `0.8.0`, ở mỗi phiên bản khác nhau sẽ có cách biên dịch khác nhau
 
 3. Lấy Contract Object hệ nhị phân
+
 Các solidity object sau khi biên dịch thành công thì chứa rất rất nhiều thuộc tính (properties) và giá trị (values). Tuy nhiên chúng ta chỉ cần lấy contract object, vì vậy có thể lấy `SimpleToken` contract object bằng cách truy cập các thuộc tính đối tượng (object properties).
 
   ```js
 const contractFile = tempFile.contracts['SimpleToken.sol']['SimpleToken'];
 ```
 
-4. Xuất `contractFile` Objec
+4. Xuất `contractFile` Object
 
 
 ```js
@@ -128,6 +130,22 @@ const account_from = {
 };
 ```
 
+6. Lấy `abi` và `bin`
+
+Khi deploy smart contract, chúng ta cần 2 đối số quan trọng của smart contract đó là `bytecode` và `abi`. Ở bước 1, chúng ta đã tải `SimpleToken` object đã được biên dịch, do đó có thể nhận `bytecode` và `abi` từ `SimpleToken` object.
 
 
+```
+const bytecode = contractFile.evm.bytecode.object;
+const abi = contractFile.abi;
+```
+7. Nhận instance của contract
+
+Có thể tạo instance bằng `abi` đã nhận ở bước trước
+
+```
+const deployContract = new web3.eth.Contract(abi);
+```
+
+8. Tạo 
 
