@@ -147,5 +147,54 @@ Có thể tạo instance bằng `abi` đã nhận ở bước trước
 const deployContract = new web3.eth.Contract(abi);
 ```
 
-8. Tạo 
+8. Tạo giao dịch `deployContract`
+
+```
+const deployTx = deployContract.deploy({
+    data: bytecode,
+    arguments: ['DAPPLEARNING', 'DAPP', 0, 10000000],
+});
+```
+
+| Cho đến hiện tại, giao dịch chưa được deploy vào blockchain
+
+9. Kí giao dịch
+
+Sử dụng Private key để kí giao dịch.
+
+```
+const deployTransaction = await web3.eth.accounts.signTransaction(
+    {
+    data: deployTx.encodeABI(),
+    gas: '8000000',
+    },
+    account_from.privateKey
+);
+```
+10. Deploy contract
+
+Gửi giao dịch `deployTransaction` đã kí đến Blockchain, bạn sẽ nhận được biên lai giao dịch. Địa chỉ hợp đồng (contract address) cũng được gửi kèm trong biên lai.
+
+```
+const deployReceipt = await web3.eth.sendSignedTransaction(deployTransaction.rawTransaction);
+console.log(`Contract deployed at address: ${deployReceipt.contractAddress}`);
+```
+11. Tạo giao dịch chuyển khoản (a tranfer transaction)
+
+Tác vụ dưới đây là ví dụ cho một cuộc giao dịch chuyển khoản ERC20, người nhận là `receiver account`, và số lượng giao dịch là 100000 token.
+
+```
+const transferTx = erc20Contract.methods.transfer(receiver, 100000).encodeABI();
+```
+
+12. Kí và gửi giao dịch
+
+```
+const transferReceipt = await web3.eth.sendSignedTransaction(transferTransaction.rawTransaction);
+```
+
+
+
+
+
 
