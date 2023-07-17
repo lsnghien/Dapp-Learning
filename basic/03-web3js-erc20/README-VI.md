@@ -193,6 +193,29 @@ const transferTx = erc20Contract.methods.transfer(receiver, 100000).encodeABI();
 const transferReceipt = await web3.eth.sendSignedTransaction(transferTransaction.rawTransaction);
 ```
 
+13. Kiểm tra số dư `receiver account`
+
+Sau khi giao dịch đã được gửi đi, bạn có thể log và kiểm tra số dư để đảm bảo số dư là chính xác.
+
+```
+erc20Contract.methods
+    .balanceOf(receiver)
+    .call()
+    .then((result) => {
+    console.log(`The balance of receiver is ${result}`);
+    });
+```
+
+## Lưu Ý
+
+- `infura` không hỗ trợ `sendTransaction`, chỉ hỗ trợ `sendRawtransaction`
+- `infura` không gọi `eth_sendTransaction`, vì vậy bạn cần mở khóa account trên node `ethereum`. Biết thêm thông tin chi tiết vui lòng truy cập [this](https://ethereum.stackexchange.com/questions/70853/the-method-eth-sendtransaction-does-not-exist-is-not-available-on-infura)
+
+## Tài Liệu Tham Khảo
+
+- Mocha tutorial: http://www.ruanyifeng.com/blog/2015/12/a-mocha-tutorial-of-examples.html
+- Mocha blog: https://pcaaron.github.io/pages/fe/block/improve4.html#%E8%B7%91%E6%B5%8B%E8%AF%95
+- ERC20 doc: https://docs.openzeppelin.com/contracts/2.x/api/token/erc20
 
 
 
